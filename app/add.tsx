@@ -4,6 +4,7 @@ import { Link } from 'expo-router'
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import preview from './[preview]';
 import * as FileSystem from 'expo-file-system';
+import { savePhotoUri, loadPhotoUris } from './helper';
 
 export default function add() {
 
@@ -38,8 +39,11 @@ async function takePicture() {
   }
 }
 
-function savePhoto(){
-  
+async function savePhoto() {
+  if(photoUri){
+    await savePhotoUri(photoUri);
+    alert('photo saved')
+  }
 }
 
 function backButton(){
