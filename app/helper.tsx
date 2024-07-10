@@ -23,11 +23,11 @@ export async function loadPhotoUris(): Promise<string[]> {
     }
   }
 
-export async function deletePhotoUri(index: number): Promise<void> {
+export async function deletePhotoUri(photoUri : string): Promise<void> {
     try {
         const existingUris = await AsyncStorage.getItem('photoUris');
         let uris = existingUris ? JSON.parse(existingUris) : [];
-        uris.splice(index, 1);
+        uris = uris.filter((uri: string) => uri !== photoUri)
         await AsyncStorage.setItem('photoUris', JSON.stringify(uris));
     } catch (error) {
         console.error("Failed to delete photo URI:", error);

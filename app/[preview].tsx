@@ -1,10 +1,10 @@
-import { ScrollView, StyleSheet, Text, View, Image } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { loadPhotoUris } from './helper';
+import { deletePhotoUri, loadPhotoUris } from './helper';
 
 export default function preview() {
 
-  const [photoUris, setPhotoUris] = useState<String[]>([]);
+  const [photoUris, setPhotoUris] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -13,6 +13,19 @@ export default function preview() {
     })();
   }, []);
 
+  const handleDeletePhoto = async (uri: string) => {
+    try {
+        console.log("Deleting photo with URI:", uri);
+        await deletePhotoUri(uri);
+        const updatedUris = await loadPhotoUris();
+        setPhotoUris(updatedUris);
+        console.log("Photo deletion and reload successful.");
+    } catch (error) {
+        console.error("Error deleting photo:", error);
+        alert("Photo could not be deleted. Error: "+error);
+    }
+}
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -20,6 +33,9 @@ export default function preview() {
           photoUris.map((uri, index) => (
             <View key={index} style={styles.imageContainer}>
               <Image source={{ uri: String(uri) }} style={styles.image} />
+              <TouchableOpacity style={styles.button} onPress={() => handleDeletePhoto(uri)}>
+                <Text style={styles.text}>Sil</Text>
+              </TouchableOpacity>
             </View>
           ))
         ) : (
@@ -44,5 +60,10 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     resizeMode: 'cover'
-  }
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  text: {}
 })
