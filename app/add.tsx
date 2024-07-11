@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-n
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'expo-router'
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
-import preview from './[preview]';
+// import  fotoId from './p/[fotoId]';
 import * as FileSystem from 'expo-file-system';
 import { savePhotoUri, loadPhotoUris } from './helper';
 
