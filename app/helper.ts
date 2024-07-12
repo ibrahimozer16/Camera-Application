@@ -10,7 +10,7 @@ interface Photo {
 
 export async function savePhotoUri(photoUri: string): Promise<void>{
     const id = uuid();
-    const filename = photoUri.split('/').pop();
+    const filename = photoUri;
     const documentDirectory = FileSystem.documentDirectory;
     if(documentDirectory === null){
         throw new Error("documentDirectory bulunamadı!");

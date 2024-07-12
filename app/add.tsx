@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-n
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'expo-router'
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
-// import  fotoId from './p/[fotoId]';
+import  fotoId from './p/[fotoId]';
 import * as FileSystem from 'expo-file-system';
 import { savePhotoUri, loadPhotoUris } from './helper';
 
@@ -76,7 +76,7 @@ function backButton(){
             <TouchableOpacity style={styles.button} onPress={savePhoto}>
               <Text style={styles.text}>Kaydet</Text>
             </TouchableOpacity>
-            <TouchableOpacity style= {styles.button2} onPress={backButton}>
+            <TouchableOpacity style= {styles.button} onPress={backButton}>
               <Text style= {styles.text}>Geri Dön</Text>
             </TouchableOpacity>
           </View>
@@ -87,9 +87,12 @@ function backButton(){
             <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
               <Text style={styles.text}>Flip Camera</Text>
             </TouchableOpacity>
-            <TouchableOpacity style= {styles.button2} onPress={takePicture}>
+            <TouchableOpacity style= {styles.button} onPress={takePicture}>
               <Text style= {styles.text}>Çek</Text>
             </TouchableOpacity>
+            <Link href={'/'} style={styles.button}>
+              <Text style= {styles.text}>Geri Dön</Text>
+            </Link>
           </View>
         </CameraView>
         )
@@ -125,10 +128,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   button: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  button2: {
     flex: 1,
     alignItems: 'center',
   },

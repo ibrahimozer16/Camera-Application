@@ -3,47 +3,41 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'expo-router'
 import { deletePhotoUri, loadFolder, loadPhotoUris } from './helper'
 import * as FileSystem from 'expo-file-system';
+import { PhotoProvider, usePhotos } from './context/photoContext';
 
 export default function index() {
-  // useEffect(()=>{
-  //   if(FileSystem.documentDirectory !== null){
-  //     loadFolder(FileSystem.documentDirectory)
-  //   }
-  // }, [])
 
-  interface Photo {
-    id: string;
-    uri: string;
-  }
+  return (
+    <PhotoProvider>
+      <View style={styles.container}> 
+        <Link href={'/add'} style={styles.photo} onPress={()=> console.log("x")}> Camera </Link>
+        <PhotoList />
+      </View>
+    </PhotoProvider>
+  )
+}
 
-  const [photos, setPhotos] = useState<Photo[]>([]);
+const PhotoList = () => {
+  const {photos, removePhoto, loadPhoto } = usePhotos();
 
   useEffect(() => {
     const fetchPhotos = async () => {
-      const loadedPhotos = await loadPhotoUris();
-      setPhotos(loadedPhotos);
+      loadPhoto();
     };
     fetchPhotos(); // Fonksiyonu useEffect hook içinde çağır
   }, []);
 
-  const handleDeletePhoto = async (id: string) => {
+  const handleDeletePhoto = async (photoId: string) => {
     try {
-        console.log("Deleting photo with ID:", id);
-        await deletePhotoUri(id);
-        const updatedPhotos = await loadPhotoUris();
-        setPhotos(updatedPhotos);
-        console.log("Photo deletion and reload successful.");
+      await removePhoto(photoId);
+      alert('Photo removed successfully!');
     } catch (error) {
-        console.error("Error deleting photo:", error);
-        alert("Photo could not be deleted. Error: "+error);
+      alert('Failed to remove photo');
     }
   }
 
-  
   return (
-    <View style={styles.container}> 
-      <Link href={'/add'} style={styles.photo} onPress={()=> console.log("x")}> Camera </Link>
-      <View style={styles.container1}>
+    <View style={styles.container1}>
       <ScrollView>
         {photos.length > 0 ? (
           photos.map((photo, index) => (
@@ -59,8 +53,8 @@ export default function index() {
         )}
       </ScrollView>
     </View>
-    </View>
   )
+
 }
 
 const styles = StyleSheet.create({

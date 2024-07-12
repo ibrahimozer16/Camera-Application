@@ -25,16 +25,15 @@ export default function RootLayout() {
     return null;
   }
 
-  
 
   return (
     <ThemeProvider value={ DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index"  />
-        <Stack.Screen name="add"  />
-        <Stack.Screen name="p/[fotoId]"  />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+        <Stack>
+          <Stack.Screen name="index"  />
+          <Stack.Screen name="add"  />
+          <Stack.Screen name="p/[fotoId]"  />
+          <Stack.Screen name="+not-found" />
+        </Stack>
     </ThemeProvider>
   );
 }
