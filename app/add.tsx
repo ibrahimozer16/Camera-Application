@@ -1,17 +1,19 @@
-import { StyleSheet, Text, View, Button, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, Button, TouchableOpacity, Image, Linking } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'expo-router'
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
-import  fotoId from './p/[fotoId]';
+// import  fotoId from './p/[fotoId]';
 import * as FileSystem from 'expo-file-system';
 import { savePhotoUri, loadPhotoUris } from './helper';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
-export default function add() {
+export default function AddScreen() {
 
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [scanned, setScanned] = useState(false);
 
   
 
@@ -20,6 +22,22 @@ export default function add() {
       await requestPermission();
     })();
   }, []);
+
+  const handleBarCodeScanned = ({type, data}: {type: any, data: any}) => {
+    setScanned(true);
+    // alert(`BarCode with type ${type} and data ${data} has been scanned!`);
+    if(data.startsWith('http' || 'https')){
+      Linking.canOpenURL(data).then((supported) => {
+        if(supported){
+          Linking.openURL(data);
+        }else{
+          console.log("Don't know how to open URI: " + data);
+        }
+      });
+    }else{
+      alert(`Scanned non-URL data: ${data}`);
+    }
+  }  
 
 async function takePicture() {
   try {
@@ -74,25 +92,36 @@ function backButton(){
           <Image source={{uri: photoUri}} style={styles.preview} resizeMode="cover"/>
             <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={savePhoto}>
-              <Text style={styles.text}>Kaydet</Text>
+              <Text style={styles.text}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity style= {styles.button} onPress={backButton}>
-              <Text style= {styles.text}>Geri Dön</Text>
+              <Text style= {styles.text}>Go Back</Text>
             </TouchableOpacity>
           </View>
         </View>
       ) : (
-        <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
+        <CameraView 
+          ref={cameraRef} 
+          style={styles.camera} 
+          facing={facing}
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
               <Text style={styles.text}>Flip Camera</Text>
             </TouchableOpacity>
             <TouchableOpacity style= {styles.button} onPress={takePicture}>
-              <Text style= {styles.text}>Çek</Text>
+              <Text style= {styles.text}>Take Photo</Text>
             </TouchableOpacity>
-            <Link href={'/'} style={styles.button}>
-              <Text style= {styles.text}>Geri Dön</Text>
-            </Link>
+            {
+              scanned && (
+                <TouchableOpacity style={styles.button} onPress={() => setScanned(false)}>
+                  <Text style={styles.text}>Scan Again</Text>
+                </TouchableOpacity>
+              )
+            }
+            {/* <Link href={'/'} style={styles.button}>
+              <Text style= {styles.text}>Go Back</Text>
+            </Link> */}
           </View>
         </CameraView>
         )

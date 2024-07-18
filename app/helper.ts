@@ -10,12 +10,13 @@ interface Photo {
 
 export async function savePhotoUri(photoUri: string): Promise<void>{
     const id = uuid();
-    const filename = photoUri;
+    const filename = photoUri.split('/').pop();
     const documentDirectory = FileSystem.documentDirectory;
     if(documentDirectory === null){
         throw new Error("documentDirectory bulunamadı!");
     }
     const newPath = documentDirectory + filename;
+    const captureDate = new Date().toISOString();
 
     try {
         await FileSystem.moveAsync({
@@ -26,8 +27,9 @@ export async function savePhotoUri(photoUri: string): Promise<void>{
         const photos = existingUris ? JSON.parse(existingUris) : [];
         photos.push({id, uri: newPath});
         await AsyncStorage.setItem('photoUris', JSON.stringify(photos)); 
-        console.log("Photo saved with ID: ", id)
+        console.log("Photo saved with ID: ", id);
         console.log("File saved to: ", newPath);
+        console.log("Photo taken: ", captureDate);
     } catch (error) {
         console.log("Error saving photo: ", error);
     }

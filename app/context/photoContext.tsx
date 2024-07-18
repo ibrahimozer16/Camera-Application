@@ -34,7 +34,6 @@ const PhotoProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     };
 
     const loadPhoto = async () => {
-        await loadPhotoUris();
         const loadPhotos = await loadPhotoUris();
         setPhotos(loadPhotos);
     }

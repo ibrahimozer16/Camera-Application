@@ -1,17 +1,15 @@
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { Link } from 'expo-router'
-import { deletePhotoUri, loadFolder, loadPhotoUris } from './helper'
-import * as FileSystem from 'expo-file-system';
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Pressable } from 'react-native'
+import React, { useEffect } from 'react'
+import { Link, router } from 'expo-router'
 import { PhotoProvider, usePhotos } from './context/photoContext';
 
-export default function index() {
+export default function IndexScreen() {
 
   return (
     <PhotoProvider>
       <View style={styles.container}> 
-        <Link href={'/add'} style={styles.photo} onPress={()=> console.log("x")}> Camera </Link>
         <PhotoList />
+        <Link href={'/add'} style={styles.photo} onPress={()=> console.log("x")}> Camera </Link>
       </View>
     </PhotoProvider>
   )
@@ -21,10 +19,7 @@ const PhotoList = () => {
   const {photos, removePhoto, loadPhoto } = usePhotos();
 
   useEffect(() => {
-    const fetchPhotos = async () => {
-      loadPhoto();
-    };
-    fetchPhotos(); // Fonksiyonu useEffect hook içinde çağır
+    loadPhoto();
   }, []);
 
   const handleDeletePhoto = async (photoId: string) => {
@@ -42,9 +37,11 @@ const PhotoList = () => {
         {photos.length > 0 ? (
           photos.map((photo, index) => (
             <View key={photo.id} style={styles.imageContainer}>
-              <Image source={{ uri: photo.uri }} style={styles.image} />
+              <Pressable onPress={() => router.push(`/p/${photo.id}`)}>
+                <Image source={{ uri: photo.uri }} style={styles.image} />
+              </Pressable>
               <TouchableOpacity style={styles.button} onPress={() => handleDeletePhoto(photo.id)}>
-                <Text style={styles.text}>Sil</Text>
+                <Text style={styles.text}>Delete</Text>
               </TouchableOpacity>
             </View>
           ))
@@ -62,6 +59,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#dddddd', 
+    bottom: 0,
   },
   container1: {
     flex: 1,
@@ -75,17 +74,28 @@ const styles = StyleSheet.create({
   image: {
     width: 300,
     height: 300,
-    resizeMode: 'cover'
+    resizeMode: 'cover',
+    borderRadius: 10,
   },
   button: {
     alignItems: 'center',
-    justifyContent: 'flex-end'
+    justifyContent: 'center',
+    backgroundColor: '#993030',
+    width: '100%',
+    borderRadius: 10,
+    marginTop: 5,
   },
-  text: {},
+  text: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#dddddd'
+  },
   photo: {
     fontSize: 20,
     fontWeight: 'bold',
-    backgroundColor: 'red',
+    backgroundColor: '#109999',
     padding: 24,
+    borderRadius: 20,
+    color: '#dddddd',
   }
 })
